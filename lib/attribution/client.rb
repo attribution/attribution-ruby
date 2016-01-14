@@ -1,3 +1,4 @@
+require 'faraday'
 module Attribution
   class Client
     def base_url
@@ -13,13 +14,16 @@ module Attribution
     end
 
     def post(path, payload_hash)
-      execute_request Attribution::Request.post(path, payload_hash)
-    end
-
-    private
-    def execute_request(request)
-      result = request.execute(base_url, username: @project_id)
-      result
+      conn = Faraday.new(:url => base_url) do |faraday|
+        faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
+      end
+      response = conn.post do |req|
+        req.url path
+        req.headers['Content-Type'] = 'application/json'
+        req.headers['User-Agent'] = 'Attribution-Ruby/0.0.1'
+        req.body = payload_hash.to_json
+      end
+      raise "#{response.inspect}" unless response.success?
     end
   end
 end

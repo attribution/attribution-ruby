@@ -7,9 +7,9 @@ describe Attribution::Client do
     let(:body) { "" }
 
     before do
-      stub_request(:post, "https://12345:@track.attributionapp.com/track").
-         with(:body => "{\"user_id\":\"user_123\",\"event\":\"Ate a Pizza\",\"properties\":{\"revenue\":14.99}}",
-              :headers => {'Accept'=>'application/vnd.attribution.3+json', 'Accept-Encoding'=>'gzip, deflate', 'Acceptencoding'=>'gzip, deflate', 'Content-Type'=>'application/json', 'User-Agent'=>'Attribution-Ruby/0.0.1'}).
+      stub_request(:post, "https://track.attributionapp.com/track").
+         with(:body => {"event"=>"Ate a Pizza", "properties"=>{"revenue"=>14.99}, "user_id"=>"user_123"},
+              :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>'Attribution-Ruby/0.0.1'}).
          to_return(:status => status, :body => body, :headers => {})
     end
 
@@ -22,7 +22,7 @@ describe Attribution::Client do
       it "shows error" do
         expect {
           client.track({ user_id: 'user_123', event: 'Ate a Pizza', properties: { revenue: 14.99 } })
-        }.to raise_error(Attribution::AuthenticationError)
+        }.to raise_error
       end
     end
   end
