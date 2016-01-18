@@ -51,5 +51,29 @@ describe Attribution::Client do
         end
       end
     end
+
+    describe "#identify" do
+      before do
+        stub_request(:post, "https://track.attributionapp.com/identify").
+           with(:body => {"user_id"=>"12345", "traits"=> { "email" => "test@example.com" }},
+                :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>'Attribution-Ruby/0.0.1'}).
+           to_return(:status => status, :body => body, :headers => {})
+      end
+
+      it "makes alias call" do
+        response = client.identify(user_id: "12345", traits: { email: "test@example.com" })
+        expect(response).to be_success
+      end
+
+      context "when there is an error" do
+        let(:status) { 401 }
+        it "shows error" do
+          expect {
+            client.identify(user_id: "12345", traits: { email: "test@example.com" })
+          }.to raise_error
+        end
+      end
+    end
+
   end
 end

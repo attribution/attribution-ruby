@@ -17,6 +17,10 @@ module Attribution
       post('/alias', { user_id: user_id, previous_id: previous_id })
     end
 
+    def identify(data)
+      post('/identify', data)
+    end
+
     def post(path, payload_hash)
       conn = Faraday.new(:url => base_url) do |faraday|
         faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP

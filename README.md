@@ -13,3 +13,10 @@ attribution.alias(
   user_id: USER_ID,
   previous_id: PREVIOUS_ID
 )
+
+attribution.identify(
+  user_id: USER_ID,
+  traits: {
+    email: 'test@example.com'
+  }
+)
