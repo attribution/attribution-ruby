@@ -6,23 +6,49 @@ describe Attribution::Client do
     let(:status) { 200 }
     let(:body) { "" }
 
-    before do
-      stub_request(:post, "https://track.attributionapp.com/track").
-         with(:body => {"event"=>"Ate a Pizza", "properties"=>{"revenue"=>14.99}, "user_id"=>"user_123"},
-              :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>'Attribution-Ruby/0.0.1'}).
-         to_return(:status => status, :body => body, :headers => {})
+    describe "#track" do
+      before do
+        stub_request(:post, "https://track.attributionapp.com/track").
+           with(:body => {"event"=>"Ate a Pizza", "properties"=>{"revenue"=>14.99}, "user_id"=>"user_123"},
+                :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>'Attribution-Ruby/0.0.1'}).
+           to_return(:status => status, :body => body, :headers => {})
+      end
+
+      it "makes track call" do
+        response = client.track(event: "Ate a Pizza", user_id: 'user_123', properties: { revenue: 14.99 })
+        expect(response).to be_success
+      end
+
+      context "when there is an error" do
+        let(:status) { 401 }
+        it "shows error" do
+          expect {
+            client.track(event: "Ate a Pizza", user_id: 'user_123', properties: { revenue: 14.99 })
+          }.to raise_error
+        end
+      end
     end
 
-    it "makes track call" do
-      client.track({ user_id: 'user_123', event: 'Ate a Pizza', properties: { revenue: 14.99 } })
-    end
+    describe "#alias" do
+      before do
+        stub_request(:post, "https://track.attributionapp.com/alias").
+           with(:body => {"user_id"=>"12345", "previous_id"=> "12"},
+                :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>'Attribution-Ruby/0.0.1'}).
+           to_return(:status => status, :body => body, :headers => {})
+      end
 
-    context "when there is an error" do
-      let(:status) { 401 }
-      it "shows error" do
-        expect {
-          client.track({ user_id: 'user_123', event: 'Ate a Pizza', properties: { revenue: 14.99 } })
-        }.to raise_error
+      it "makes alias call" do
+        response = client.alias(user_id: "12345", previous_id: "12")
+        expect(response).to be_success
+      end
+
+      context "when there is an error" do
+        let(:status) { 401 }
+        it "shows error" do
+          expect {
+            client.alias(previous_id: "12345", user_id: "12")
+          }.to raise_error
+        end
       end
     end
   end

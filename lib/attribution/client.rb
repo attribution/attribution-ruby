@@ -13,6 +13,10 @@ module Attribution
       post('/track', data)
     end
 
+    def alias(previous_id:, user_id:)
+      post('/alias', { user_id: user_id, previous_id: previous_id })
+    end
+
     def post(path, payload_hash)
       conn = Faraday.new(:url => base_url) do |faraday|
         faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
@@ -24,6 +28,7 @@ module Attribution
         req.body = payload_hash.to_json
       end
       raise "#{response.inspect}" unless response.success?
+      response
     end
   end
 end
