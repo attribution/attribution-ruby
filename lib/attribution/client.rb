@@ -24,6 +24,7 @@ module Attribution
     def post(path, payload_hash)
       conn = Faraday.new(:url => base_url) do |faraday|
         faraday.adapter  Faraday.default_adapter  # make requests with Net::HTTP
+        faraday.basic_auth @project_id, ""
       end
       response = conn.post do |req|
         req.url path

@@ -8,7 +8,7 @@ describe Attribution::Client do
 
     describe "#track" do
       before do
-        stub_request(:post, "https://track.attributionapp.com/track").
+        stub_request(:post, "https://12345:@track.attributionapp.com/track").
            with(:body => {"event"=>"Ate a Pizza", "properties"=>{"revenue"=>14.99}, "user_id"=>"user_123"},
                 :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>'Attribution-Ruby/0.0.1'}).
            to_return(:status => status, :body => body, :headers => {})
@@ -31,7 +31,7 @@ describe Attribution::Client do
 
     describe "#alias" do
       before do
-        stub_request(:post, "https://track.attributionapp.com/alias").
+        stub_request(:post, "https://12345:@track.attributionapp.com/alias").
            with(:body => {"user_id"=>"12345", "previous_id"=> "12"},
                 :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>'Attribution-Ruby/0.0.1'}).
            to_return(:status => status, :body => body, :headers => {})
@@ -54,7 +54,7 @@ describe Attribution::Client do
 
     describe "#identify" do
       before do
-        stub_request(:post, "https://track.attributionapp.com/identify").
+        stub_request(:post, "https://12345:@track.attributionapp.com/identify").
            with(:body => {"user_id"=>"12345", "traits"=> { "email" => "test@example.com" }},
                 :headers => {'Accept'=>'*/*', 'Accept-Encoding'=>'gzip;q=1.0,deflate;q=0.6,identity;q=0.3', 'Content-Type'=>'application/json', 'User-Agent'=>'Attribution-Ruby/0.0.1'}).
            to_return(:status => status, :body => body, :headers => {})
